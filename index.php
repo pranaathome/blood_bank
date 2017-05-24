@@ -1,5 +1,12 @@
 <!DOCTYPE html>
-
+<?php
+    include 'modul/users/connect.php';
+    if($_SESSION['status'] == "user"){
+        $id = $_SESSION['id'];
+        $query = mysqli_query($conn, "SELECT * FROM users WHERE username = '$id'");
+        $result = mysqli_fetch_array($query);
+    }
+?>
 <html lang="en-US">
 <head>
 	<meta charset="utf-8">
@@ -127,11 +134,8 @@
 				<div class="panel panel-login">
 					<div class="panel-heading">
 						<div class="row">
-							<div class="col-xs-6">
+							<div class="col-xs-12">
 								<a href="#" class="active" id="login-form-link">Login</a>
-							</div>
-							<div class="col-xs-6">
-								<a href="#" id="register-form-link">Register</a>
 							</div>
 						</div>
 						<hr>
@@ -139,7 +143,7 @@
 					<div class="panel-body">
 						<div class="row">
 							<div class="col-lg-12">
-								<form id="login-form" action="http://phpoll.com/login/process" method="post" role="form" style="display: block;">
+								<form id="login-form" action="modul/users/login.php" method="post" role="form" style="display: block;">
 									<div class="form-group">
 										<label for="username"> Username </label>
 										<input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="">
@@ -150,15 +154,12 @@
 									</div>
 									<div class="form-group text-left">
 										<input type="checkbox" tabindex="3" class="" name="remember" id="remember">
-										<label for="remember"> Remember Me</label>
+										<label for="remember"> Ingat Saya</label>
 									</div>
 									<div class="form-group">
 										<div class="row">
-											<div class="col-xs-6 col-sm-6 col-md-6">
-												<input type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Penyelenggara">
-											</div>
-											<div class="col-xs-6 col-sm-6 col-md-6">
-												<input type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Pendonor">
+											<div class="col-xs-6 col-sm-6 col-md-6" id="login-btn">
+												<input type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Login">
 											</div>
 										</div>
 									</div>
@@ -166,36 +167,8 @@
 										<div class="row">
 											<div class="col-lg-12">
 												<div class="text-center">
-													<a href="http://phpoll.com/recover" tabindex="5" class="forgot-password">Forgot Password?</a>
+													<a href="http://phpoll.com/recover" tabindex="5" class="forgot-password">Lupa Password?</a>
 												</div>
-											</div>
-										</div>
-									</div>
-								</form>
-								<form id="register-form" action="http://phpoll.com/register/process" method="post" role="form" style="display: none;">
-									<div class="form-group">
-										<label for="username"> Username </label>
-										<input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="">
-									</div>
-									<div class="form-group">
-										<label for="email"> E-mail Address </label>
-										<input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email Address" value="">
-									</div>
-									<div class="form-group">
-										<label for="password"> Password </label>
-										<input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password">
-									</div>
-									<div class="form-group">
-										<label for="password"> Confirm Password </label>
-										<input type="password" name="confirm-password" id="confirm-password" tabindex="2" class="form-control" placeholder="Confirm Password">
-									</div>
-									<div class="form-group">
-										<div class="row">
-											<div class="col-xs-6 col-sm-6 col-md-6">
-												<input type="submit" name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="Register as Penyelenggara">
-											</div>
-											<div class="col-xs-6 col-sm-6 col-md-6">
-												<input type="submit" name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="Register as Pendonor">
 											</div>
 										</div>
 									</div>
@@ -207,22 +180,96 @@
 			</div>
 		</div>
 	</div>
+	<p id="sign-up"> Belum punya akun? <a href="#" data-toggle="modal" data-target="#myModal"> Daftar </a> </p>
+	<!-- Large modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    	<div class="modal-dialog modal-lg">
+        	<div class="modal-content">
+            	<div class="modal-header">
+                	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    	×</button>
+                	<h4 class="modal-title" id="myModalLabel">
+                    Registrasi</h4>
+            	</div>
+            	<div class="modal-body">
+                	<div class="row">
+                    	<div class="col-md-13" style="border-right: 1px dotted #C2C2C2;padding-right: 30px;">
+                        	<!-- Tab panes -->
+                            	<div class="tab-pane" id="Registration">
+                                	<form role="form" class="form-horizontal" method="post" action="modul/users/register.php" enctype="multipart/form-data">
+                                	<div class="form-group">
+                                    	<label for="email" class="col-sm-2 control-label">
+                                        	Nama</label>
+                                    	<div class="col-sm-10">
+                                        	<div class="row">
+                                            	<div class="col-md-12">
+                                                	<input type="text" class="form-control" placeholder="Name" name="name" />
+                                            	</div>
+                                        	</div>
+                                    	</div>
+                                	</div>
+                                	<div class="form-group">
+                                    	<label for="email" class="col-sm-2 control-label">
+                                        	Email</label>
+                                    	<div class="col-sm-10">
+                                        	<input type="email" class="form-control" id="email" placeholder="Email" name="email" />
+                                    	</div>
+                                	</div>
+                                	<div class="form-group">
+                                    	<label for="mobile" class="col-sm-2 control-label">
+                                        	Username</label>
+                                    	<div class="col-sm-10">
+                                        	<input type="text" class="form-control" id="username" placeholder="Username" name="username" />
+                                    	</div>
+                                	</div>
+                                	<div class="form-group">
+                                    	<label for="password" class="col-sm-2 control-label">
+                                        	Password</label>
+                                    	<div class="col-sm-10">
+                                        	<input type="password" class="form-control" id="password" placeholder="Password" name="password" />
+                                    	</div>
+                                	</div>
+                                    <div class="form-group text-left">
+                                        <input type="checkbox" tabindex="3" class="" name="status" value="1" id="remember">
+                                        <label for="post">Pendonor</label>
+                                    </div>
+                                    <div class="form-group text-left">
+                                        <input type="checkbox" tabindex="3" class="" name="status" value="2" id="remember">
+                                        <label for="post">Penyelenggara</label>
+                                    </div>
+                                	<div class="row">
+                                    	<div class="col-sm-2">
+                                    	</div>
+                                    	<div class="col-sm-10">
+                                        	<button type="submit" class="btn btn-primary btn-sm">
+                                            	Simpan</button>
+                                    	</div>
+                                	</div>
+                                	</form>
+                            	</div>
+                    	</div>
+                	</div>
+            	</div>
+        	</div>
+    	</div>
+	</div>
+
     </section>
     <section id="contact">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 text-center">
-                    <h2 class="section-heading">Let's Get In Touch!</h2>
+                    <h2 class="section-heading">@Kelompok 4 - BloodBank Team</h2>
                     <hr class="primary">
-                    <p>Ready to start your next project with us? That's great! Give us a call or send us an email and we will get back to you as soon as possible!</p>
                 </div>
                 <div class="col-lg-4 col-lg-offset-2 text-center">
                     <i class="fa fa-phone fa-3x sr-contact"></i>
-                    <p>123-456-6789</p>
+                    <p>085659181814</p>
                 </div>
                 <div class="col-lg-4 text-center">
                     <i class="fa fa-envelope-o fa-3x sr-contact"></i>
-                    <p><a href="mailto:your-email@your-domain.com">feedback@startbootstrap.com</a></p>
+                    <p><a href="mailto:jems.p14@gmail.com">jems.p14@gmail.com</a></p>
                 </div>
             </div>
         </div>
